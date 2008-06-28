@@ -5,10 +5,10 @@ require 'date'
 
 GEM = "dot_xen"
 GEM_VERSION = "0.0.1"
-AUTHOR = "Your Name"
-EMAIL = "Your Email"
-HOMEPAGE = "http://example.com"
-SUMMARY = "A gem that provides..."
+AUTHOR = "Corey Donohoe"
+EMAIL = "atmos@atmos.org"
+HOMEPAGE = "http://atmos.org"
+SUMMARY = "A gem that provides reading and writing utils for xen config files.  It's also a really simple use of treetop"
 
 spec = Gem::Specification.new do |s|
   s.name = GEM
@@ -23,7 +23,7 @@ spec = Gem::Specification.new do |s|
   s.homepage = HOMEPAGE
   
   # Uncomment this to add a dependency
-  # s.add_dependency "foo"
+  s.add_dependency "treetop"
   
   s.require_path = 'lib'
   s.autorequire = GEM

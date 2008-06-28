@@ -9,7 +9,7 @@ Usage
 mpro% irb            
 >> require 'lib/dot_xen'
 => true
->> XenConfigFile::Parser.new.parse(File.read("spec/fixtures/ey00-s00348.xen")).eval({}).to_s
+>> puts XenConfigFile::Parser.new.simple_parse(File.read("spec/fixtures/ey00-s00348.xen")).to_s
 #  -*- mode: python; -*-
 kernel = "/boot/vmlinuz-2.6.18-xenU"
 memory = 712
@@ -29,5 +29,4 @@ disk = [
 
 There's two parts to this
 
-The .parse call checks to see if the document is even valid for our grammar
-The .eval traverses the tree and builds the representation using the models in lib/xen/ast.rb
+The .simple_parse traverses the tree and builds the representation using the models in lib/xen/ast.rb.  It'll return nil if the document is invalid.

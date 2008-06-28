@@ -1,6 +1,8 @@
 require 'rubygems'
 require 'rake/gempackagetask'
 require 'rubygems/specification'
+require 'spec'
+require 'spec/rake/spectask'
 require 'date'
 
 GEM = "dot_xen"
@@ -43,5 +45,18 @@ desc "create a gemspec file"
 task :make_spec do
   File.open("#{GEM}.gemspec", "w") do |file|
     file.puts spec.to_ruby
+  end
+end
+
+task :default => ['spec:run']
+namespace :spec do
+  Spec::Rake::SpecTask.new('run') do |t|
+    t.spec_files = FileList['spec/**/**/*.rb']
+  end
+  
+  desc "Generate specdocs for examples for inclusion in RDoc"
+  Spec::Rake::SpecTask.new('doc') do |t|
+    t.spec_files = FileList['spec/**/**/*.rb']
+    t.spec_opts = ["--format", "specdoc"]
   end
 end

@@ -27,9 +27,6 @@ describe XenConfigFile::AST::Assignment do
     it "should know its rhs" do
       @ass.rhs.should == 42
     end
-    it "should to_s properly" do
-      @ass.to_s.should == "number = 42"
-    end
   end
 end
 
@@ -44,10 +41,6 @@ describe XenConfigFile::AST::ArrayAssignment do
     it "should know its rhs" do
       @ass.rhs.should == [42, 'forty-two', 666]
     end
-    
-    it "should to_s properly" do
-      @ass.to_s.should == "number = [ \n           42,\n           forty-two,\n           666,\n           ]"
-    end
   end
 end
 
@@ -55,9 +48,6 @@ describe XenConfigFile::AST::LiteralString do
   describe "initialize" do
     before(:all) do
       @str = XenConfigFile::AST::LiteralString.new('foo')
-    end
-    it "should quote(to_s) properly" do
-      @str.to_s.should == "\"foo\""
     end
   end
 end
@@ -78,9 +68,6 @@ describe XenConfigFile::AST::Disk do
     end
     it "should assign the mode" do
       @disk.mode.should == 'w'
-    end
-    it "should handle writing itself out" do
-      @disk.to_s.should == '"phy:/dev/ey00-data4/root-s00348,sda1,w"'
     end
   end
   

@@ -1,7 +1,21 @@
 module XenConfigFile
   module AST
+    module Visitor
+      module InstanceMethods
+        def accept(visitor)
+          visitor.visit(self)
+        end
+      end
+      def self.included(receiver)
+        receiver.send :include, InstanceMethods
+      end
+    end
     
-    class ConfigFile
+    class Base
+      include Visitor
+    end
+
+    class ConfigFile < Base
       attr_accessor :disks, :vars, :comments
       def initialize(contents)
         @vars = [ ]
@@ -22,16 +36,9 @@ module XenConfigFile
         @vars << (value.kind_of?(Array) ? ArrayAssignment.new(key, value) : Assignment.new(key, value))
         value
       end
-      
-      def to_s
-        str = ''
-        @comments.each { |c| str << "##{c}\n" }
-        @vars.each { |v| str << "#{v}\n" }
-        str
-      end
     end
     
-    class Disk
+    class Disk < Base
       attr_accessor :volume, :device, :mode
       def self.build(contents)
         disks = contents[:variables].detect { |var| var.lhs == :disk }
@@ -47,37 +54,20 @@ module XenConfigFile
       def initialize(volume, device, mode)
         @volume, @device, @mode = volume, device, mode
       end
-      def to_s; "\"#{volume},#{device},#{mode}\"" end
     end
     
-    class Assignment
+    class Assignment < Base
       attr_accessor :lhs, :rhs
       def initialize(lhs, rhs)
         @lhs, @rhs = lhs, rhs
       end
-      def to_s
-        "#{lhs} = #{rhs.to_s}"
-      end
     end
     
-    class ArrayAssignment < Assignment
-      def to_s
-        if rhs.size > 1
-          str = "#{lhs} = [ "
-          buf = ''
-          rhs.each do |val|
-            buf << ' '*str.size << val.to_s << ",\n"
-          end
-          buf << ' '*str.size << ']'
-          str << "\n" << buf
-        else
-          "#{lhs} = [ #{rhs.first.to_s} ]"
-        end
-      end
-    end
+    class ArrayAssignment < Assignment; end
     
+    # sucks that this inherits from string :\
     class LiteralString < String
-      def to_s; "\"#{self}\"" end
+      include Visitor
     end
 
   end

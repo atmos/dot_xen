@@ -67,7 +67,7 @@ module XenConfigFileYouShouldntUse
   
   class NumberNode < ::Treetop::Runtime::SyntaxNode
     def eval(env={})
-      text_value.to_i
+      XenConfigFile::AST::LiteralNumber.new(text_value.to_i)
     end
   end
 end

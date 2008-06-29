@@ -28,7 +28,7 @@ describe XenConfigFile::Parser, "parsing" do
 
        describe "to_s" do
          before(:all) do
-           @visitor = XenConfigFile::AST::Visitor::PrettyPrintVisitor::Visitor.new
+           @visitor = XenConfigFile::AST::Visitor::PrettyPrintVisitor.new
            @reparser = @parser.parse(@evaluated_result.accept(@visitor))
          end
          it "should not be nil" do

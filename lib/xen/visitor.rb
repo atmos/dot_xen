@@ -3,57 +3,66 @@ require 'pp'
 module XenConfigFile
   module AST
     module Visitor
-      class PrettyPrintVisitor
-        def visit_config_file(config_file)
-          str = ''
-          config_file.comments.each { |c| str << "##{c}\n" }
-          config_file.vars.each { |v| str << v.accept(self) << "\n" }
-          str
+      module PrettyPrintVisitor
+        
+        module ConfigFile
+          def visit(visitor)
+            str = ''
+            comments.each { |c| str << "##{c}\n" }
+            vars.each { |v| str << v.visit(visitor) << "\n" }
+            str
+          end
         end
-      
-        def visit_disk(disk)
-          "\"#{disk.volume},#{disk.device},#{disk.mode}\""
+        
+        module Assignment
+          def visit(visitor)
+            "#{lhs} = #{rhs.visit(visitor)}"
+          end
         end
-      
-        def visit_assignment(assignment)
-          # rhs = assignment.rhs.respond_to?(:accept) ? assignment.rhs.accept(self) : assignment.rhs
-          "#{assignment.lhs} = #{visit(assignment.rhs)}"
+        
+        module Disk
+          def visit(visitor)
+            "\"#{volume},#{device},#{mode}\""
+          end
         end
-      
-        def visit_array_assignment(array_assignment)
-          if array_assignment.rhs.size > 1
-            str = "#{array_assignment.lhs} = [ "
-            buf = ''
-            array_assignment.rhs.each do |val|
-              buf << ' '*str.size << visit(val) << ",\n"
+        
+        module ArrayAssignment
+          def visit(visitor)
+            if rhs.size > 1
+              str = "#{lhs} = [ "
+              buf = ''
+              rhs.each do |val|
+                buf << ' '*str.size << val.visit(visitor) << ",\n"
+              end
+              buf << ' '*str.size << ']'
+              str << "\n" << buf
+            else
+              "#{lhs} = [ #{rhs.first.visit(visitor)} ]"
+            end    
+          end
+        end
+        
+        module LiteralString
+          def visit(visitor)
+            "\"#{self}\""
+          end
+        end
+        
+        module Fixnum
+          def visit(visitor); to_s end
+        end
+        
+        class Visitor
+          def initialize
+            ast_ns = Object.const_get('XenConfigFile').const_get('AST')
+            visitor_ns = ast_ns.const_get('Visitor').const_get('PrettyPrintVisitor')
+            %w(ConfigFile Assignment ArrayAssignment Disk LiteralString).each do |klass|
+              ast_ns.const_get("#{klass}").send(:include, visitor_ns.const_get("#{klass}"))
             end
-            buf << ' '*str.size << ']'
-            str << "\n" << buf
-          else
-            "#{array_assignment.lhs} = [ #{visit(array_assignment.rhs.first)} ]"
-          end    
-        end
-      
-        def visit_literal_string(literal_string)
-          "\"#{literal_string}\""
-        end
-      
-        def visit(obj)
-          case obj.class.name.to_s
-          when 'XenConfigFile::AST::ConfigFile'
-            visit_config_file(obj)
-          when 'XenConfigFile::AST::Assignment'
-            visit_assignment(obj)
-          when 'XenConfigFile::AST::ArrayAssignment'
-            visit_array_assignment(obj)
-          when 'XenConfigFile::AST::Disk'
-            visit_disk(obj)
-          when 'XenConfigFile::AST::LiteralString'
-            visit_literal_string(obj)
-          when 'Fixnum'
-            obj
-          else
-            puts obj.class
+            Object.const_get('Fixnum').send(:include, visitor_ns.const_get("Fixnum"))
+          end
+          def visit(obj)
+            obj.visit(self)
           end
         end
       end

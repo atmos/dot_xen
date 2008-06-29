@@ -78,6 +78,11 @@ namespace :spec do
   Spec::Rake::SpecTask.new(:integration) do |t|
     t.spec_opts << '--format' << 'specdoc' << '--colour'
     t.spec_opts << '--loadby' << 'random'
+    t.rcov = ENV.has_key?('NO_RCOV') ? ENV['NO_RCOV'] != 'true' : true
     t.spec_files = File.dirname(__FILE__) + '/spec/integrations/**/*_spec.rb'
+    t.rcov_opts << '--exclude' << 'spec,'
+    t.rcov_opts << '--text-summary'
+    t.rcov_opts << '--sort' << 'coverage' << '--sort-reverse'
+    t.rcov_opts << '--only-uncovered'
   end
 end

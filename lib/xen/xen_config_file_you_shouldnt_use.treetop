@@ -9,7 +9,7 @@ grammar XenConfigFileYouShouldntUse
   end
   
   rule array_list
-    space* value:variable space* remains:(',' space* var:array_list space* ','?)* <ArrayListNode> {
+    space* value:(variable/comment) ','? space* remains:(space* var:array_list space* ','?)* <ArrayListNode> {
       def variables(env = {})
         [value.eval(env)] + remains.elements.map { |command_and_var|  command_and_var.var.eval(env) }
       end
@@ -28,7 +28,7 @@ grammar XenConfigFileYouShouldntUse
   rule string
     ([A-Za-z_-])+ <StringLiteralNode> /
     '"' (!'"' . / '\"')* '"' <DoubleQuotedStringLiteralNode> /
-    '\'' (!'\'' .)* '\'' <SingleQuotedStringLiteralNode>
+    "'" (!"'" .)* "'" <SingleQuotedStringLiteralNode>
   end
 
   rule comment

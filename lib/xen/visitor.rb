@@ -5,6 +5,7 @@ module XenConfigFile
     module Visitor
       module PrettyPrintVisitor
         
+        # a module and a visit function for each class in the AST
         module ConfigFile
           def visit(visitor)
             str = ''
@@ -52,8 +53,12 @@ module XenConfigFile
           def visit(visitor); to_s end
         end
         
+        
+        # the class you feed to the AST
         class Visitor
           def initialize
+          end
+          def setup
             ast_ns = Object.const_get('XenConfigFile').const_get('AST')
             visitor_ns = ast_ns.const_get('Visitor').const_get('PrettyPrintVisitor')
             %w(ConfigFile Assignment ArrayAssignment Disk LiteralString).each do |klass|

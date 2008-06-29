@@ -57,6 +57,7 @@ module XenConfigFile
         # the class you feed to the AST
         class Visitor
           def initialize
+            setup
           end
           def setup
             ast_ns = Object.const_get('XenConfigFile').const_get('AST')

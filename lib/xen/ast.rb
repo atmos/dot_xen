@@ -27,13 +27,16 @@ module XenConfigFile
       
       # convenience to checkout a params value
       def [](key)
-        @vars.detect { |v| v.lhs == key }.rhs
+        @vars.detect { |v| v.lhs == key }.rhs rescue nil
       end
       
       # set variables in existing ASTs with this
       def []=(key, value)
-        @vars << (value.kind_of?(Array) ? ArrayAssignment.new(key, value) : Assignment.new(key, value))
-        value
+        @vars << if value.kind_of?(Array)
+          ArrayAssignment.new(key, value.collect { |v| v.kind_of?(String) ? LiteralString.new(v) : LiteralNumber.new(v) })
+        else
+          Assignment.new(key, value.kind_of?(String) ? LiteralString.new(value) : LiteralNumber.new(value))
+        end
       end
     end
     

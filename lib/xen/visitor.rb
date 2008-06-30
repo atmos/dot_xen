@@ -6,7 +6,7 @@ module XenConfigFile
       class PrettyPrintVisitor
         def visitConfigFile(config_file)
           str = ''
-          config_file.comments.each { |c| str << "##{c}\n" }
+          config_file.comments.each { |c| str << "##{c}\n" } unless config_file.comments.nil?
           config_file.vars.each { |v| str << v.accept(self) << "\n" }
           str
         end
@@ -16,6 +16,7 @@ module XenConfigFile
         end
 
         def visitArrayAssignment(assignment)
+          return "" if assignment.rhs.nil?
           if assignment.rhs.size > 1
             str = "#{assignment.lhs} = [ "
             buf = ''

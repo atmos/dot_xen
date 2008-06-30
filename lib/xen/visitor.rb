@@ -12,10 +12,6 @@ module XenConfigFile
           @visitors ||= { }
         end
         
-        def self.inherited(child)
-          child.send(:class_variable_set, :@@visitors, {})
-        end
-        
         def visit(node)
           block = self.class.visitors[node.class.name] or raise "no eval block defined for node #{node.class.intern}"
           block.arity == 1 ? block.call(node) : block.call(node, self)

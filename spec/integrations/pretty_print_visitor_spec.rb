@@ -1,6 +1,7 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 require File.dirname(__FILE__) + '/../../lib/xen/visitor'
+require File.dirname(__FILE__) + '/../../lib/xen/pretty_print_visitor'
 
 
 describe XenConfigFile::Parser, "simple parsing" do

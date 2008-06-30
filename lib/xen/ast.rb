@@ -3,13 +3,8 @@ module XenConfigFile
   module AST    
     # base class for hooking children nodes up
     class Base
-      def self.inherited(subclass)
-        subclass.send(:define_method, :accept) do |visitor|
-          visitor.send("visit#{subclass.name.split(/::/).last}", self)
-        end
-      end
+      def accept(visitor); visitor.visit(self) end
     end
-
 
     # what you get back from simple_parse
     class ConfigFile < Base

@@ -6,7 +6,7 @@ require 'spec/rake/spectask'
 require 'date'
 
 GEM = "dot_xen"
-GEM_VERSION = "0.0.1"
+GEM_VERSION = "0.0.2"
 AUTHOR = "Corey Donohoe"
 EMAIL = "atmos@atmos.org"
 HOMEPAGE = "http://atmos.org"

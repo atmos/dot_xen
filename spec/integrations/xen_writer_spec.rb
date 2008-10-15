@@ -15,7 +15,7 @@ describe XenConfigFile::Parser, "parsing" do
        @result.should_not be_nil
      end
      it "should return a kind of XenConfigFileYouShouldntUse::ConfigFileNode" do
-       @result.should be_a_kind_of(XenConfigFileYouShouldntUse::ConfigFileNode)
+       @result.should be_a_kind_of(XenConfigFile::Grammar::ConfigFileNode)
      end
      
      describe "evaluated output" do

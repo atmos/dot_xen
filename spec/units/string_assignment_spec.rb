@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
-describe XenConfigFileYouShouldntUse::AssignmentNode do
+describe XenConfigFile::Grammar::AssignmentNode do
   before(:all) do
     @parser = XenConfigFile::Parser.new
   end
@@ -16,7 +16,7 @@ describe XenConfigFileYouShouldntUse::AssignmentNode do
         @result.should_not be_nil
       end
       it "should return an assignment node you shouldn't use" do
-        @result.should be_a_kind_of(XenConfigFileYouShouldntUse::ConfigFileNode)
+        @result.should be_a_kind_of(XenConfigFile::Grammar::ConfigFileNode)
       end
       describe " calling .eval" do
         before(:all) do
@@ -38,7 +38,7 @@ describe XenConfigFileYouShouldntUse::AssignmentNode do
         @result.should_not be_nil
       end
       it "should return an assignment node you shouldn't use" do
-        @result.should be_a_kind_of(XenConfigFileYouShouldntUse::ConfigFileNode)
+        @result.should be_a_kind_of(XenConfigFile::Grammar::ConfigFileNode)
       end
       describe " calling .eval" do
         before(:all) do

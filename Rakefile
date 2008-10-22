@@ -48,41 +48,13 @@ task :make_spec do
   end
 end
 
-task :default => ['spec:run']
-namespace :spec do
-  Spec::Rake::SpecTask.new('run') do |t|
-    t.spec_files = FileList['spec/**/**/*.rb']
-  end
-  
-  desc "Generate specdocs for examples for inclusion in RDoc"
-  Spec::Rake::SpecTask.new('doc') do |t|
-    t.spec_files = FileList['spec/**/**/*.rb']
-    t.spec_opts = ["--format", "specdoc"]
-  end
-end
-
-namespace :spec do
-  desc "Run unit specifications"
-  Spec::Rake::SpecTask.new(:unit) do |t|
-    t.spec_opts << '--format' << 'specdoc' << '--colour'
-    t.spec_opts << '--loadby' << 'random'
-    t.spec_files = %w(units).collect { |dir| Dir["spec/#{dir}/**/*_spec.rb"] }.flatten
-    t.rcov = ENV.has_key?('NO_RCOV') ? ENV['NO_RCOV'] != 'true' : true
-    t.rcov_opts << '--exclude' << 'spec,'
-    t.rcov_opts << '--text-summary'
-    t.rcov_opts << '--sort' << 'coverage' << '--sort-reverse'
-    t.rcov_opts << '--only-uncovered'
-  end
-
-  desc "Run integration specifications"
-  Spec::Rake::SpecTask.new(:integration) do |t|
-    t.spec_opts << '--format' << 'specdoc' << '--colour'
-    t.spec_opts << '--loadby' << 'random'
-    t.rcov = ENV.has_key?('NO_RCOV') ? ENV['NO_RCOV'] != 'true' : true
-    t.spec_files = File.dirname(__FILE__) + '/spec/integrations/**/*_spec.rb'
-    t.rcov_opts << '--exclude' << 'spec,'
-    t.rcov_opts << '--text-summary'
-    t.rcov_opts << '--sort' << 'coverage' << '--sort-reverse'
-    t.rcov_opts << '--only-uncovered'
-  end
+Spec::Rake::SpecTask.new(:default) do |t|
+  t.spec_opts << %w(-fs --color)
+  t.spec_opts << '--loadby' << 'random'
+  t.spec_files = %w(units integrations).collect { |dir| Dir["spec/#{dir}/*_spec.rb"] }.flatten
+  t.rcov = ENV.has_key?('NO_RCOV') ? ENV['NO_RCOV'] != 'true' : true
+  t.rcov_opts << '--exclude' << '.gem/'
+  t.rcov_opts << '--text-summary'
+  t.rcov_opts << '--sort' << 'coverage' << '--sort-reverse'
+  t.rcov_opts << '--only-uncovered'
 end

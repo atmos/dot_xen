@@ -30,3 +30,4 @@ disk = [
 There's two parts to this
 
 The .simple_parse traverses the tree and builds the representation using the models in lib/xen/ast.rb.  It'll return nil if the document is invalid.
+
